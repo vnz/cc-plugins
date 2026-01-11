@@ -1,0 +1,20 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "vnz",
+  "description": "Personal Claude Code plugins by vinz",
+  "owner": {
+    "name": "vinz"
+  },
+  "plugins": [
+    {
+      "name": "date-context",
+      "description": "Injects current date/time context at session start to fix web search year issues",
+      "version": "1.0.0",
+      "source": "./plugins/date-context",
+      "category": "productivity",
+      "author": {
+        "name": "vinz"
+      }
+    }
+  ]
+}

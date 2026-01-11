@@ -1,0 +1,10 @@
+{
+  "name": "date-context",
+  "version": "1.0.0",
+  "description": "Injects current date/time context at session start to fix web search year issues",
+  "author": {
+    "name": "vinz"
+  },
+  "repository": "https://github.com/vnz/claude-plugins",
+  "keywords": ["date", "time", "context", "web-search", "session"]
+}
