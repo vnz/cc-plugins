@@ -6,6 +6,3 @@ Thumbs.db
 *.swp
 *.swo
 *~
-
-# Claude-mem auto-generated files
-**/CLAUDE.md
