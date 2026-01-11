@@ -6,12 +6,12 @@ Personal Claude Code plugin marketplace by vinz.
 
 ### From GitHub
 ```bash
-/plugin marketplace add vnz/claude-plugins
+/plugin marketplace add vnz/cc-plugins-vnz
 ```
 
 ### For local development
 ```bash
-/plugin marketplace add ~/code/vnz/claude-plugins
+/plugin marketplace add ~/code/vnz/cc-plugins-vnz
 ```
 
 ## Available Plugins
@@ -24,7 +24,7 @@ Personal Claude Code plugin marketplace by vinz.
 
 After adding the marketplace:
 ```bash
-/plugin install date-context@claude-plugins-vnz
+/plugin install date-context@cc-plugins-vnz
 ```
 
 ## License

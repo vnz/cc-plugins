@@ -26,14 +26,14 @@ The hook outputs:
 
 ### From GitHub
 ```bash
-/plugin marketplace add vnz/claude-plugins
-/plugin install date-context@claude-plugins-vnz
+/plugin marketplace add vnz/cc-plugins-vnz
+/plugin install date-context@cc-plugins-vnz
 ```
 
 ### From local development
 ```bash
-/plugin marketplace add ~/code/vnz/claude-plugins
-/plugin install date-context@claude-plugins-vnz
+/plugin marketplace add ~/code/vnz/cc-plugins-vnz
+/plugin install date-context@cc-plugins-vnz
 ```
 
 ## Verification
