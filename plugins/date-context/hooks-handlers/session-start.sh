@@ -7,7 +7,7 @@ ISO_DATE=$(date +"%Y-%m-%dT%H:%M:%S%z")
 YEAR=$(date +%Y)
 
 # Output JSON with additionalContext (same pattern as explanatory-output-style)
-cat << EOF
+cat <<EOF
 {
   "hookSpecificOutput": {
     "hookEventName": "SessionStart",

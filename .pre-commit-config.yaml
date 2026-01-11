@@ -3,6 +3,21 @@
 # Run all hooks: prek run --all-files
 
 repos:
+  # Shell linting
+  - repo: https://github.com/koalaman/shellcheck-precommit
+    rev: v0.10.0
+    hooks:
+      - id: shellcheck
+        args: ["--severity=warning"]
+
+  # Shell formatting
+  - repo: https://github.com/scop/pre-commit-shfmt
+    rev: v3.8.0-1
+    hooks:
+      - id: shfmt
+        args: ["-i", "2", "-ci", "-w"]  # 2-space indent, case indent, write
+
+  # Local hooks
   - repo: local
     hooks:
       - id: json-validate
