@@ -9,12 +9,12 @@ Personal Claude Code plugin marketplace by vnz.
 
 ### From GitHub
 ```bash
-/plugin marketplace add vnz/cc-plugins-vnz
+/plugin marketplace add vnz/cc-plugins
 ```
 
 ### For local development
 ```bash
-/plugin marketplace add ~/code/vnz/cc-plugins-vnz
+/plugin marketplace add ~/code/vnz/cc-plugins
 ```
 
 ## Available Plugins
@@ -22,6 +22,7 @@ Personal Claude Code plugin marketplace by vnz.
 | Plugin | Description |
 |--------|-------------|
 | `date-context` | Injects current date/time at session start to fix web search year issues |
+| `terraform-ls` | Terraform language server for code intelligence (go-to-definition, hover, diagnostics) |
 
 ## Usage
 

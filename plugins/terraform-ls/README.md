@@ -13,11 +13,12 @@ Terraform language server plugin for Claude Code, providing code intelligence fe
 
 ## Supported Files
 
-| Extension | Description |
-|-----------|-------------|
-| `.tf` | Terraform configuration |
-| `.tfvars` | Variable definitions |
-| `.tftest.hcl` | Terraform test files |
+| Extension | Language ID | Description |
+|-----------|-------------|-------------|
+| `.tf` | `terraform` | Terraform configuration |
+| `.tfvars` | `terraform-vars` | Variable definitions |
+
+> **Note:** `.tftest.hcl` files are not yet supported by terraform-ls ([tracking issue](https://github.com/hashicorp/terraform-ls/issues/1648)).
 
 ## Prerequisites
 
