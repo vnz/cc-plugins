@@ -27,13 +27,13 @@ The hook outputs:
 ### From GitHub
 ```bash
 /plugin marketplace add vnz/claude-plugins
-/plugin install date-context@vnz
+/plugin install date-context@claude-plugins-vnz
 ```
 
 ### From local development
 ```bash
 /plugin marketplace add ~/code/vnz/claude-plugins
-/plugin install date-context@vnz
+/plugin install date-context@claude-plugins-vnz
 ```
 
 ## Verification

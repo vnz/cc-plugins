@@ -1,6 +1,6 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
-  "name": "vnz",
+  "name": "claude-plugins-vnz",
   "description": "Personal Claude Code plugins by vinz",
   "owner": {
     "name": "vinz"

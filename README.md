@@ -24,7 +24,7 @@ Personal Claude Code plugin marketplace by vinz.
 
 After adding the marketplace:
 ```bash
-/plugin install date-context@vnz
+/plugin install date-context@claude-plugins-vnz
 ```
 
 ## License
