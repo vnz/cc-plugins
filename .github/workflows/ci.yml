@@ -16,6 +16,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Install just
+        uses: extractions/setup-just@v2
+
       - uses: j178/prek-action@v1
         # Runs all hooks (equivalent to `just all`):
         #   fmt      → shfmt
