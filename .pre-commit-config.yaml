@@ -31,3 +31,10 @@ repos:
         entry: "bash -c 'for f in \"$@\"; do test -x \"$f\" || exit 1; done' _"
         language: system
         files: \.sh$
+
+      - id: validate-plugins
+        name: Validate plugin structure
+        entry: scripts/validate-plugins.sh
+        language: script
+        pass_filenames: false
+        always_run: true

@@ -11,8 +11,15 @@ permissions:
 
 jobs:
   lint:
-    name: Validate plugins
+    name: Lint and validate
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: j178/prek-action@v1  # Installs and runs prek
+
+      - uses: j178/prek-action@v1
+        # Runs all pre-commit hooks:
+        # - shellcheck: Shell script linting
+        # - shfmt: Shell script formatting
+        # - json-validate: JSON syntax validation
+        # - script-permissions: Ensure .sh files are executable
+        # - validate-plugins: Version consistency, required files
