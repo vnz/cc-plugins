@@ -4,8 +4,8 @@
   "description": "Injects current date/time context at session start to fix web search year issues",
   "license": "MIT",
   "author": {
-    "name": "vinz"
+    "name": "vnz"
   },
-  "repository": "https://github.com/vnz/cc-plugins-vnz",
+  "repository": "https://github.com/vnz/cc-plugins",
   "keywords": ["date", "time", "context", "web-search", "session"]
 }

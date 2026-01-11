@@ -1,9 +1,9 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "cc-plugins-vnz",
-  "description": "Personal Claude Code plugins by vinz",
+  "description": "Personal Claude Code plugins by vnz",
   "owner": {
-    "name": "vinz"
+    "name": "vnz"
   },
   "plugins": [
     {
@@ -13,7 +13,7 @@
       "source": "./plugins/date-context",
       "category": "productivity",
       "author": {
-        "name": "vinz"
+        "name": "vnz"
       }
     }
   ]

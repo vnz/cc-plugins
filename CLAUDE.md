@@ -1,6 +1,6 @@
 # cc-plugins-vnz
 
-Personal Claude Code plugin marketplace by vinz.
+Personal Claude Code plugin marketplace by vnz.
 
 ## Adding a New Plugin
 
