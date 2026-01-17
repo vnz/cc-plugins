@@ -1,0 +1,29 @@
+{
+  "$schema": "https://anthropic.com/claude-code/plugin.schema.json",
+  "name": "prettier",
+  "version": "1.0.0",
+  "description": "Auto-formats files after Claude Code edits using Prettier (with EditorConfig support)",
+  "author": {
+    "name": "vnz"
+  },
+  "license": "MIT",
+  "keywords": ["prettier", "formatting", "editorconfig", "code-style"],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vnz/cc-plugins"
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${CLAUDE_PLUGIN_ROOT}/scripts/format.sh",
+            "timeout": 30
+          }
+        ]
+      }
+    ]
+  }
+}

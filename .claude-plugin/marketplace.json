@@ -25,6 +25,16 @@
       "author": {
         "name": "vnz"
       }
+    },
+    {
+      "name": "prettier",
+      "description": "Auto-formats files after edits using Prettier (with EditorConfig support)",
+      "version": "1.0.0",
+      "source": "./plugins/prettier",
+      "category": "development",
+      "author": {
+        "name": "vnz"
+      }
     }
   ]
 }
