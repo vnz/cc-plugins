@@ -10,14 +10,14 @@ Auto-formats files after Claude Code writes or edits them using [Prettier](https
 
 ### Supported File Types
 
-| Category | Extensions |
-|----------|------------|
+| Category              | Extensions                                                   |
+| --------------------- | ------------------------------------------------------------ |
 | JavaScript/TypeScript | `.js`, `.jsx`, `.ts`, `.tsx`, `.mjs`, `.cjs`, `.mts`, `.cts` |
-| JSON | `.json`, `.json5`, `.jsonc` |
-| CSS | `.css`, `.scss`, `.sass`, `.less` |
-| HTML/Templates | `.html`, `.htm`, `.vue`, `.svelte`, `.astro` |
-| Markdown | `.md`, `.mdx`, `.markdown` |
-| Data formats | `.yaml`, `.yml`, `.graphql`, `.gql`, `.xml` |
+| JSON                  | `.json`, `.json5`, `.jsonc`                                  |
+| CSS                   | `.css`, `.scss`, `.sass`, `.less`                            |
+| HTML/Templates        | `.html`, `.htm`, `.vue`, `.svelte`, `.astro`                 |
+| Markdown              | `.md`, `.mdx`, `.markdown`                                   |
+| Data formats          | `.yaml`, `.yml`, `.graphql`, `.gql`, `.xml`                  |
 
 ## Prerequisites
 

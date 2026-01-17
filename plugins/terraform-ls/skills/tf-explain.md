@@ -8,7 +8,7 @@ When explaining Terraform code:
 
 ## 1. Identify the Context
 
-- **Provider**: Determine from resource prefix (aws_, azurerm_, google_, kubernetes_, etc.)
+- **Provider**: Determine from resource prefix (aws*, azurerm*, google*, kubernetes*, etc.)
 - **Resource Type**: Resource, data source, module, variable, output, or local
 - **Purpose**: Infrastructure component being managed
 
@@ -28,27 +28,32 @@ Provide explanations covering:
 
 ## 4. Provider-Specific Guidance
 
-### AWS (aws_*)
+### AWS (aws\_\*)
+
 - Highlight IAM implications
 - Note VPC/networking requirements
 - Mention encryption options (KMS, S3 SSE)
 
-### Azure (azurerm_*)
+### Azure (azurerm\_\*)
+
 - Note resource group requirements
 - Highlight managed identity options
 - Mention Azure Policy considerations
 
-### Google Cloud (google_*)
+### Google Cloud (google\_\*)
+
 - Note project/organization hierarchy
 - Highlight service account requirements
 - Mention IAM binding patterns
 
-### Kubernetes (kubernetes_*)
+### Kubernetes (kubernetes\_\*)
+
 - Note namespace considerations
 - Highlight RBAC implications
 - Mention resource limits/requests
 
-### Terraform Cloud / Enterprise (tfe_*)
+### Terraform Cloud / Enterprise (tfe\_\*)
+
 - Note workspace and organization structure
 - Highlight remote state and run implications
 - Mention Sentinel policies and run triggers
@@ -59,6 +64,7 @@ Provide explanations covering:
 User: "What does this aws_security_group resource do?"
 
 Response should cover:
+
 - Purpose: Network firewall rules for EC2/VPC resources
 - Ingress/egress rule structure
 - Security implications of 0.0.0.0/0 CIDR

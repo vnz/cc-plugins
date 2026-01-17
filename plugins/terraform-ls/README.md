@@ -4,19 +4,19 @@ Terraform language server plugin for Claude Code, providing code intelligence fe
 
 ## Features
 
-| Feature | Description |
-|---------|-------------|
-| **goToDefinition** | Navigate to resource/variable/module definitions |
-| **findReferences** | Find all usages across your codebase |
-| **hover** | Inline documentation for resources and attributes |
-| **diagnostics** | Real-time validation and error checking |
+| Feature            | Description                                       |
+| ------------------ | ------------------------------------------------- |
+| **goToDefinition** | Navigate to resource/variable/module definitions  |
+| **findReferences** | Find all usages across your codebase              |
+| **hover**          | Inline documentation for resources and attributes |
+| **diagnostics**    | Real-time validation and error checking           |
 
 ## Supported Files
 
-| Extension | Language ID | Description |
-|-----------|-------------|-------------|
-| `.tf` | `terraform` | Terraform configuration |
-| `.tfvars` | `terraform-vars` | Variable definitions |
+| Extension | Language ID      | Description             |
+| --------- | ---------------- | ----------------------- |
+| `.tf`     | `terraform`      | Terraform configuration |
+| `.tfvars` | `terraform-vars` | Variable definitions    |
 
 > **Note:** `.tftest.hcl` files are not yet supported by terraform-ls ([tracking issue](https://github.com/hashicorp/terraform-ls/issues/1648)).
 
@@ -55,9 +55,11 @@ Enable LSP in your Claude Code settings (`~/.claude/settings.json`):
 ## Troubleshooting
 
 ### Plugin not visible
+
 Run `/plugin list` and verify the plugin appears. Try reinstalling if needed.
 
 ### LSP not working
+
 1. Verify terraform-ls is in your PATH: `which terraform-ls`
 2. Check that `ENABLE_LSP_TOOL=1` is set in your settings and restart Claude Code.
 3. Check Claude Code logs for any `terraform-ls` errors.
