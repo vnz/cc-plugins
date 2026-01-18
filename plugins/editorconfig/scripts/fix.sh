@@ -26,17 +26,21 @@ PROPS=$(editorconfig "$FILE_PATH" 2>/dev/null) || exit 0
 # Exit if no properties found (no .editorconfig applies)
 [[ -z "$PROPS" ]] && exit 0
 
-# Parse properties into variables
-get_prop() {
-  echo "$PROPS" | grep -E "^$1=" | cut -d= -f2 | tr -d '[:space:]'
-}
+# Parse properties into variables efficiently (single pass)
+INDENT_STYLE="" INDENT_SIZE="" TAB_WIDTH=""
+END_OF_LINE="" TRIM_TRAILING="" INSERT_FINAL_NL=""
 
-INDENT_STYLE=$(get_prop "indent_style")
-INDENT_SIZE=$(get_prop "indent_size")
-TAB_WIDTH=$(get_prop "tab_width")
-END_OF_LINE=$(get_prop "end_of_line")
-TRIM_TRAILING=$(get_prop "trim_trailing_whitespace")
-INSERT_FINAL_NL=$(get_prop "insert_final_newline")
+while IFS='=' read -r key value; do
+  value=${value//[[:space:]]/}
+  case "$key" in
+    indent_style) INDENT_STYLE=$value ;;
+    indent_size) INDENT_SIZE=$value ;;
+    tab_width) TAB_WIDTH=$value ;;
+    end_of_line) END_OF_LINE=$value ;;
+    trim_trailing_whitespace) TRIM_TRAILING=$value ;;
+    insert_final_newline) INSERT_FINAL_NL=$value ;;
+  esac
+done <<<"$PROPS"
 
 # Use tab_width as fallback for indent_size
 [[ -z "$INDENT_SIZE" && -n "$TAB_WIDTH" ]] && INDENT_SIZE="$TAB_WIDTH"
@@ -45,56 +49,55 @@ INSERT_FINAL_NL=$(get_prop "insert_final_newline")
 # Default indent_size to 4 if indent_style is set but size isn't
 [[ -n "$INDENT_STYLE" && -z "$INDENT_SIZE" ]] && INDENT_SIZE="4"
 
+# Create temp file for modifications
+TEMP_FILE=$(mktemp)
+trap 'rm -f "$TEMP_FILE" "$TEMP_FILE.tmp"' EXIT
+cp "$FILE_PATH" "$TEMP_FILE"
+
 # Track if file was modified
 MODIFIED=false
 
-# Create temp file for modifications
-TEMP_FILE=$(mktemp)
-trap 'rm -f "$TEMP_FILE"' EXIT
-cp "$FILE_PATH" "$TEMP_FILE"
-
-# 1. Trim trailing whitespace
+# 1. Trim trailing whitespace (portable: use temp file instead of sed -i)
 if [[ "$TRIM_TRAILING" == "true" ]]; then
-  sed -i 's/[[:space:]]*$//' "$TEMP_FILE"
+  sed 's/[[:space:]]*$//' "$TEMP_FILE" >"$TEMP_FILE.tmp" && mv "$TEMP_FILE.tmp" "$TEMP_FILE"
   MODIFIED=true
 fi
 
-# 2. Handle end_of_line
-case "$END_OF_LINE" in
-  lf)
-    # Convert CRLF and CR to LF
-    sed -i 's/\r$//' "$TEMP_FILE"
-    sed -i 's/\r/\n/g' "$TEMP_FILE"
-    MODIFIED=true
-    ;;
-  crlf)
-    # First normalize to LF, then convert to CRLF
-    sed -i 's/\r$//' "$TEMP_FILE"
-    sed -i 's/$/\r/' "$TEMP_FILE"
-    MODIFIED=true
-    ;;
-  cr)
-    # Convert to CR only (rare)
-    sed -i 's/\r$//' "$TEMP_FILE"
-    tr '\n' '\r' <"$TEMP_FILE" >"$TEMP_FILE.tmp" && mv "$TEMP_FILE.tmp" "$TEMP_FILE"
-    MODIFIED=true
-    ;;
-esac
+# 2. Handle end_of_line (only LF supported - safest option)
+# CRLF/CR conversion is complex and error-prone, so we only normalize CRLF→LF
+if [[ "$END_OF_LINE" == "lf" ]]; then
+  # Remove carriage returns at end of lines (CRLF→LF)
+  # This is safe and won't corrupt files with \r in string literals
+  sed 's/\r$//' "$TEMP_FILE" >"$TEMP_FILE.tmp" && mv "$TEMP_FILE.tmp" "$TEMP_FILE"
+  MODIFIED=true
+fi
 
 # 3. Handle indent_style conversion
 if [[ -n "$INDENT_STYLE" && -n "$INDENT_SIZE" ]]; then
   case "$INDENT_STYLE" in
     space)
-      # Convert tabs to spaces
+      # Convert leading tabs to spaces using --initial (only leading whitespace)
       if command -v expand &>/dev/null; then
-        expand -t "$INDENT_SIZE" "$TEMP_FILE" >"$TEMP_FILE.tmp" && mv "$TEMP_FILE.tmp" "$TEMP_FILE"
+        # GNU expand has --initial, BSD expand has -i
+        if expand --help 2>&1 | grep -q -- '--initial'; then
+          expand --initial -t "$INDENT_SIZE" "$TEMP_FILE" >"$TEMP_FILE.tmp" && mv "$TEMP_FILE.tmp" "$TEMP_FILE"
+        else
+          # Fallback: BSD expand with -i flag
+          expand -i -t "$INDENT_SIZE" "$TEMP_FILE" >"$TEMP_FILE.tmp" 2>/dev/null && mv "$TEMP_FILE.tmp" "$TEMP_FILE" || true
+        fi
         MODIFIED=true
       fi
       ;;
     tab)
       # Convert leading spaces to tabs
       if command -v unexpand &>/dev/null; then
-        unexpand -t "$INDENT_SIZE" --first-only "$TEMP_FILE" >"$TEMP_FILE.tmp" && mv "$TEMP_FILE.tmp" "$TEMP_FILE"
+        # GNU unexpand has --first-only, BSD has -a (opposite meaning)
+        if unexpand --help 2>&1 | grep -q -- '--first-only'; then
+          unexpand --first-only -t "$INDENT_SIZE" "$TEMP_FILE" >"$TEMP_FILE.tmp" && mv "$TEMP_FILE.tmp" "$TEMP_FILE"
+        else
+          # BSD unexpand only converts leading spaces by default
+          unexpand -t "$INDENT_SIZE" "$TEMP_FILE" >"$TEMP_FILE.tmp" && mv "$TEMP_FILE.tmp" "$TEMP_FILE"
+        fi
         MODIFIED=true
       fi
       ;;
@@ -109,9 +112,8 @@ if [[ "$INSERT_FINAL_NL" == "true" ]]; then
     MODIFIED=true
   fi
 elif [[ "$INSERT_FINAL_NL" == "false" ]]; then
-  # Remove trailing newlines (keep one if file has content)
+  # Remove trailing newlines
   if [[ -s "$TEMP_FILE" ]]; then
-    # Remove all trailing newlines
     printf '%s' "$(cat "$TEMP_FILE")" >"$TEMP_FILE.tmp" && mv "$TEMP_FILE.tmp" "$TEMP_FILE"
     MODIFIED=true
   fi

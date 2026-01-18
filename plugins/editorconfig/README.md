@@ -6,16 +6,18 @@ Enforces `.editorconfig` rules after Claude Code writes or edits files. **Only a
 
 This plugin applies these EditorConfig properties:
 
-| Property                   | Support                      |
-| -------------------------- | ---------------------------- |
-| `indent_style`             | ✅ Converts tabs ↔ spaces    |
-| `indent_size`              | ✅ Full                      |
-| `tab_width`                | ✅ Full                      |
-| `end_of_line`              | ✅ LF, CRLF, CR              |
-| `trim_trailing_whitespace` | ✅ Full                      |
-| `insert_final_newline`     | ✅ Full                      |
-| `charset`                  | ❌ Not implemented           |
-| `max_line_length`          | ❌ Not implemented           |
+| Property                   | Support                                |
+| -------------------------- | -------------------------------------- |
+| `indent_style`             | ✅ Converts leading tabs ↔ spaces     |
+| `indent_size`              | ✅ Full                                |
+| `tab_width`                | ✅ Full                                |
+| `end_of_line`              | ✅ LF only (CRLF→LF normalization)    |
+| `trim_trailing_whitespace` | ✅ Full                                |
+| `insert_final_newline`     | ✅ Full                                |
+| `charset`                  | ❌ Not implemented                     |
+| `max_line_length`          | ❌ Not implemented                     |
+
+> **Note**: `indent_style` only converts leading whitespace (indentation), not tabs within lines. This is safer and matches editor behavior.
 
 ## Prerequisites
 
