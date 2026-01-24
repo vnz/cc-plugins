@@ -80,10 +80,10 @@ The Dependabot CLI runs locally against your repository:
 
 ```bash
 # Dry-run mode (check for updates)
-GITHUB_ACCESS_TOKEN=$(gh auth token) dependabot update <ecosystem> <owner/repo> --local .
+LOCAL_GITHUB_ACCESS_TOKEN=$(gh auth token) dependabot update <ecosystem> <owner/repo> --local .
 
 # Apply mode (modify files)
-GITHUB_ACCESS_TOKEN=$(gh auth token) dependabot update <ecosystem> <owner/repo>
+LOCAL_GITHUB_ACCESS_TOKEN=$(gh auth token) dependabot update <ecosystem> <owner/repo>
 ```
 
 The `--local .` flag runs in dry-run mode, showing what would be updated without making changes.
