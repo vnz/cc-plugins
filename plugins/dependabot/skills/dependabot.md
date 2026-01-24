@@ -131,10 +131,10 @@ Summarize findings in a clear format:
 ## Dependabot Scan Results
 
 ### github_actions
-| Dependency | Current | Available | Type |
-|------------|---------|-----------|------|
-| actions/checkout | v4 | v6 | update |
-| extractions/setup-just | v2 | v3 | update |
+| Dependency | Current | Available |
+|------------|---------|-----------|
+| actions/checkout | v4 | v6 |
+| extractions/setup-just | v2 | v3 |
 
 ### npm_and_yarn
 No updates available.
