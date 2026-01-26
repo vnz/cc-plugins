@@ -1,10 +1,14 @@
 ---
-description: This skill should be used when the user asks to "check dependencies", "find outdated packages", "scan for updates", "use dependabot", "run dependabot", "check for security updates", "what needs updating", or requests dependency scanning for specific ecosystems like npm, terraform, or github-actions. Supports scanning all ecosystems or specific ones with "use dependabot for <ecosystem>".
+name: dependabot
+description: This skill should be used when the user asks to "check dependencies", "find outdated packages", "scan for updates", "use dependabot", "run dependabot", "check for security updates", "upgrade dependencies", "version updates", "what needs updating", or requests dependency scanning for specific ecosystems like npm, terraform, or github-actions. Supports scanning all ecosystems or specific ones with "use dependabot for <ecosystem>".
 ---
 
 # Dependabot Update Skill
 
 Scan for dependency updates using the official Dependabot CLI and optionally create PRs for found updates.
+
+**Reference files:**
+- `references/ecosystems.md` - Complete list of supported ecosystems with aliases and detection methods
 
 ## 1. Prerequisites Check
 
@@ -36,48 +40,11 @@ Analyze the user's trigger phrase:
 - **"use dependabot for npm"** → Scan only `npm_and_yarn` ecosystem
 - **"use dependabot for github-actions"** or **"use dependabot for actions"** → Scan only `github_actions` ecosystem
 
-Map common aliases to Dependabot CLI ecosystem values:
-| User Says | CLI Ecosystem |
-|-----------|---------------|
-| npm, yarn, pnpm | `npm_and_yarn` |
-| github-actions, actions, workflows | `github_actions` |
-| terraform, tf | `terraform` |
-| go, golang | `go_modules` |
-| python, pip, pipenv | `pip` |
-| ruby, bundler, gems | `bundler` |
-| rust, cargo | `cargo` |
-| docker | `docker` |
-| maven, java | `maven` |
-| gradle | `gradle` |
-| composer, php | `composer` |
-| nuget, dotnet, csharp | `nuget` |
-| helm | `helm` |
-| dart, flutter, pub | `pub` |
-| swift | `swift` |
-| elixir, hex | `hex` |
+See `references/ecosystems.md` for the complete alias mapping and detection methods.
 
 ## 3. Ecosystem Auto-Detection
 
-If scanning all ecosystems, detect which are present using file existence checks:
-
-| Ecosystem | CLI Value | Detection Method |
-|-----------|-----------|------------------|
-| GitHub Actions | `github_actions` | Glob: `.github/workflows/*.yml` or `.github/workflows/*.yaml` |
-| Terraform | `terraform` | Glob: `*.tf` or `**/*.tf` (check root and subdirs) |
-| npm/yarn/pnpm | `npm_and_yarn` | File exists: `package.json` |
-| Go | `go_modules` | File exists: `go.mod` |
-| Python (pip) | `pip` | File exists: `requirements.txt`, `pyproject.toml`, `Pipfile`, or `setup.py` |
-| Ruby | `bundler` | File exists: `Gemfile` |
-| Rust | `cargo` | File exists: `Cargo.toml` |
-| Docker | `docker` | Glob: `Dockerfile` or `*.dockerfile` or `docker-compose.yml` |
-| Maven | `maven` | File exists: `pom.xml` |
-| Gradle | `gradle` | File exists: `build.gradle` or `build.gradle.kts` |
-| Composer | `composer` | File exists: `composer.json` |
-| NuGet | `nuget` | Glob: `*.csproj` or `packages.config` or `*.fsproj` |
-| Helm | `helm` | File exists: `Chart.yaml` |
-| Pub (Dart) | `pub` | File exists: `pubspec.yaml` |
-| Swift | `swift` | File exists: `Package.swift` |
-| Hex (Elixir) | `hex` | File exists: `mix.exs` |
+If scanning all ecosystems, detect which are present using file existence checks.
 
 Report detected ecosystems to the user before proceeding:
 > "Detected ecosystems: npm_and_yarn, github_actions, terraform"
@@ -102,18 +69,20 @@ Where `<ecosystem>` is the CLI ecosystem value (e.g., `npm_and_yarn`, `terraform
 **Understanding the output:**
 - The CLI outputs **JSON lines** (one JSON object per line), NOT human-readable tables
 - The CLI **never modifies files directly** - it only outputs data describing what would change
-- The `--local .` flag means "use local filesystem as source" — this prevents the CLI from cloning from GitHub and instead uses your working directory (it's NOT a "dry-run" flag)
+- The `--local .` flag uses your working directory instead of cloning from GitHub (NOT a "dry-run" flag)
 - Output can be very large (40KB+) - it may be truncated
 - **Important:** Use `2>&1` to capture both stdout and stderr, as the CLI mixes log messages (stderr) with JSON output (stdout)
 
 ## 5. Parse Results from JSON Output
 
-The CLI outputs multiple JSON objects. Look for `create_pull_request` events to find updates:
+Filter the output for `create_pull_request` events — these contain the updates:
 
 ```bash
-# Filter for PR creation events (these contain the updates)
 <output> | grep '"type":"create_pull_request"'
 ```
+
+- ✅ **Updates found:** `create_pull_request` events in output
+- ❌ **No updates:** Only `mark_as_processed` events (grep returns nothing)
 
 Each `create_pull_request` event contains:
 - `dependencies[].name` - Package name
@@ -121,12 +90,6 @@ Each `create_pull_request` event contains:
 - `dependencies[].version` - Available version
 - `pr-title` - Suggested PR title
 - `updated-dependency-files[]` - The actual file changes to apply
-
-**Determining if updates exist:**
-- ✅ **Updates found:** One or more `create_pull_request` events in the output
-- ❌ **No updates:** Only `mark_as_processed` events appear (no `create_pull_request`)
-
-This is the definitive way to check — if you grep for `create_pull_request` and get no results, that ecosystem is up-to-date.
 
 ## 6. Present Results
 
@@ -179,8 +142,6 @@ Based on user's choice:
    ```
 
 2. **Apply changes manually:**
-   The CLI doesn't modify files - you must apply the changes yourself.
-
    From the `create_pull_request` JSON events, extract the `updated-dependency-files` array.
    Each entry contains:
    - `name` - The file path (e.g., `.github/workflows/ci.yml`)
@@ -223,9 +184,5 @@ Based on user's choice:
 ## Important Notes
 
 - Always use `gh auth token` for authentication - never ask for tokens directly
-- The CLI **outputs JSON describing changes** - it never modifies files directly
-- The `--local .` flag means "use local directory as repo source" (avoids cloning from GitHub)
-- Without `--local`, the CLI clones from GitHub but still doesn't modify your local files
 - Some ecosystems may require additional configuration (e.g., private registries)
 - If dependabot fails for an ecosystem, report the error and continue with others
-- JSON output can be 40KB+ - grep for `create_pull_request` to find relevant data
