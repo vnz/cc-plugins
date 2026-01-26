@@ -1,5 +1,5 @@
 ---
-description: Check for dependency updates using Dependabot CLI. Trigger with "use dependabot" to scan all ecosystems or "use dependabot for <ecosystem>" for a specific one (e.g., terraform, npm, github-actions).
+description: This skill should be used when the user asks to "check dependencies", "find outdated packages", "scan for updates", "use dependabot", "run dependabot", "check for security updates", "what needs updating", or requests dependency scanning for specific ecosystems like npm, terraform, or github-actions. Supports scanning all ecosystems or specific ones with "use dependabot for <ecosystem>".
 ---
 
 # Dependabot Update Skill
@@ -168,6 +168,9 @@ Based on user's choice:
 
 1. **Create a feature branch:**
    ```bash
+   # Ensure main is up-to-date before branching
+   git checkout main && git pull origin main
+
    # If branch already exists from a previous run, delete it first:
    git branch -D dependabot/<ecosystem>-updates 2>/dev/null || true
 
@@ -212,7 +215,7 @@ Based on user's choice:
    - [ ] Verify tests pass
    - [ ] Review changelog for breaking changes
 
-   🤖 Generated with [Claude Code](https://claude.ai/claude-code)"
+   🤖 Generated with [Claude Code](https://claude.com/claude-code)"
    ```
 
 5. **Return to original branch** after PR creation.
