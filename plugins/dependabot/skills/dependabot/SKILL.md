@@ -35,7 +35,7 @@ command -v jq || echo "NOT_FOUND"
 - Suggest installation via their package manager.
 
 **If jq is not found:**
-- Inform the user: "jq is needed for parsing JSON output."
+- Inform the user: "jq is recommended for robust JSON parsing. The skill will fall back to a less reliable method if it's not available."
 - Suggest installation via their package manager (e.g., `brew install jq`, `apt install jq`).
 
 ## 2. Parse User Intent
@@ -95,7 +95,7 @@ Filter the output for `create_pull_request` events — these contain the updates
 
 Each `create_pull_request` event contains:
 - `data.dependencies[].name` - Package name
-- `data.dependencies[].previous-version` - Current version
+- `data.dependencies[]["previous-version"]` - Current version
 - `data.dependencies[].version` - Available version
 - `data["pr-title"]` - Suggested PR title
 - `data["updated-dependency-files"][]` - The actual file changes to apply
