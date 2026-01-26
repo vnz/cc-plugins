@@ -1,6 +1,6 @@
 ---
 name: dependabot
-description: This skill should be used when the user asks to "check dependencies", "find outdated packages", "scan for updates", "use dependabot", "run dependabot", "check for security updates", "what needs updating", or requests dependency scanning for specific ecosystems like npm, terraform, or github-actions. Supports scanning all ecosystems or specific ones with "use dependabot for <ecosystem>".
+description: This skill should be used when the user asks to "check dependencies", "find outdated packages", "scan for updates", "use dependabot", "run dependabot", "check for security updates", "upgrade dependencies", "version updates", "what needs updating", or requests dependency scanning for specific ecosystems like npm, terraform, or github-actions. Supports scanning all ecosystems or specific ones with "use dependabot for <ecosystem>".
 ---
 
 # Dependabot Update Skill
@@ -69,7 +69,7 @@ Where `<ecosystem>` is the CLI ecosystem value (e.g., `npm_and_yarn`, `terraform
 **Understanding the output:**
 - The CLI outputs **JSON lines** (one JSON object per line), NOT human-readable tables
 - The CLI **never modifies files directly** - it only outputs data describing what would change
-- The `--local .` flag means "use local filesystem as source" — this prevents the CLI from cloning from GitHub and instead uses your working directory (it's NOT a "dry-run" flag)
+- The `--local .` flag uses your working directory instead of cloning from GitHub (NOT a "dry-run" flag)
 - Output can be very large (40KB+) - it may be truncated
 - **Important:** Use `2>&1` to capture both stdout and stderr, as the CLI mixes log messages (stderr) with JSON output (stdout)
 
