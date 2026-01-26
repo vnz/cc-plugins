@@ -1,10 +1,14 @@
 ---
+name: dependabot
 description: This skill should be used when the user asks to "check dependencies", "find outdated packages", "scan for updates", "use dependabot", "run dependabot", "check for security updates", "what needs updating", or requests dependency scanning for specific ecosystems like npm, terraform, or github-actions. Supports scanning all ecosystems or specific ones with "use dependabot for <ecosystem>".
 ---
 
 # Dependabot Update Skill
 
 Scan for dependency updates using the official Dependabot CLI and optionally create PRs for found updates.
+
+**Reference files:**
+- `references/ecosystems.md` - Complete list of supported ecosystems with aliases and detection methods
 
 ## 1. Prerequisites Check
 
@@ -36,48 +40,11 @@ Analyze the user's trigger phrase:
 - **"use dependabot for npm"** → Scan only `npm_and_yarn` ecosystem
 - **"use dependabot for github-actions"** or **"use dependabot for actions"** → Scan only `github_actions` ecosystem
 
-Map common aliases to Dependabot CLI ecosystem values:
-| User Says | CLI Ecosystem |
-|-----------|---------------|
-| npm, yarn, pnpm | `npm_and_yarn` |
-| github-actions, actions, workflows | `github_actions` |
-| terraform, tf | `terraform` |
-| go, golang | `go_modules` |
-| python, pip, pipenv | `pip` |
-| ruby, bundler, gems | `bundler` |
-| rust, cargo | `cargo` |
-| docker | `docker` |
-| maven, java | `maven` |
-| gradle | `gradle` |
-| composer, php | `composer` |
-| nuget, dotnet, csharp | `nuget` |
-| helm | `helm` |
-| dart, flutter, pub | `pub` |
-| swift | `swift` |
-| elixir, hex | `hex` |
+For the complete ecosystem alias mapping and detection methods, see `references/ecosystems.md`.
 
 ## 3. Ecosystem Auto-Detection
 
-If scanning all ecosystems, detect which are present using file existence checks:
-
-| Ecosystem | CLI Value | Detection Method |
-|-----------|-----------|------------------|
-| GitHub Actions | `github_actions` | Glob: `.github/workflows/*.yml` or `.github/workflows/*.yaml` |
-| Terraform | `terraform` | Glob: `*.tf` or `**/*.tf` (check root and subdirs) |
-| npm/yarn/pnpm | `npm_and_yarn` | File exists: `package.json` |
-| Go | `go_modules` | File exists: `go.mod` |
-| Python (pip) | `pip` | File exists: `requirements.txt`, `pyproject.toml`, `Pipfile`, or `setup.py` |
-| Ruby | `bundler` | File exists: `Gemfile` |
-| Rust | `cargo` | File exists: `Cargo.toml` |
-| Docker | `docker` | Glob: `Dockerfile` or `*.dockerfile` or `docker-compose.yml` |
-| Maven | `maven` | File exists: `pom.xml` |
-| Gradle | `gradle` | File exists: `build.gradle` or `build.gradle.kts` |
-| Composer | `composer` | File exists: `composer.json` |
-| NuGet | `nuget` | Glob: `*.csproj` or `packages.config` or `*.fsproj` |
-| Helm | `helm` | File exists: `Chart.yaml` |
-| Pub (Dart) | `pub` | File exists: `pubspec.yaml` |
-| Swift | `swift` | File exists: `Package.swift` |
-| Hex (Elixir) | `hex` | File exists: `mix.exs` |
+If scanning all ecosystems, detect which are present using file existence checks. See `references/ecosystems.md` for the full detection table.
 
 Report detected ecosystems to the user before proceeding:
 > "Detected ecosystems: npm_and_yarn, github_actions, terraform"
