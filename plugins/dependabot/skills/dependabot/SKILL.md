@@ -36,11 +36,9 @@ command -v gh || echo "NOT_FOUND"
 Analyze the user's trigger phrase:
 
 - **"use dependabot"** → Scan ALL detected ecosystems
-- **"use dependabot for terraform"** → Scan only `terraform` ecosystem
-- **"use dependabot for npm"** → Scan only `npm_and_yarn` ecosystem
-- **"use dependabot for github-actions"** or **"use dependabot for actions"** → Scan only `github_actions` ecosystem
+- **"use dependabot for \<name\>"** → Scan only the specified ecosystem
 
-See `references/ecosystems.md` for the complete alias mapping and detection methods.
+Consult `references/ecosystems.md` for the complete alias-to-ecosystem mapping (e.g., "npm" → `npm_and_yarn`, "actions" → `github_actions`).
 
 ## 3. Ecosystem Auto-Detection
 
@@ -110,5 +108,3 @@ No updates available.
 
 If no updates are found across all ecosystems:
 > "All dependencies are up-to-date!"
-
-> **Next steps:** Ask me to create a PR if you want to apply these updates.
