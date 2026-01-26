@@ -5,7 +5,7 @@ description: This skill should be used when the user asks to "check dependencies
 
 # Dependabot Update Skill
 
-Scan for dependency updates using the official Dependabot CLI and optionally create PRs for found updates.
+Scan for dependency updates using the official Dependabot CLI.
 
 **Reference files:**
 - `references/ecosystems.md` - Complete list of supported ecosystems with aliases and detection methods
@@ -36,11 +36,9 @@ command -v gh || echo "NOT_FOUND"
 Analyze the user's trigger phrase:
 
 - **"use dependabot"** → Scan ALL detected ecosystems
-- **"use dependabot for terraform"** → Scan only `terraform` ecosystem
-- **"use dependabot for npm"** → Scan only `npm_and_yarn` ecosystem
-- **"use dependabot for github-actions"** or **"use dependabot for actions"** → Scan only `github_actions` ecosystem
+- **"use dependabot for \<name\>"** → Scan only the specified ecosystem
 
-See `references/ecosystems.md` for the complete alias mapping and detection methods.
+Consult `references/ecosystems.md` for the complete alias-to-ecosystem mapping (e.g., "npm" → `npm_and_yarn`, "actions" → `github_actions`).
 
 ## 3. Ecosystem Auto-Detection
 
@@ -111,78 +109,8 @@ No updates available.
 If no updates are found across all ecosystems:
 > "All dependencies are up-to-date!"
 
-## 7. Offer PR Creation
-
-If updates were found, ask the user:
-
-> "Would you like to apply these updates and create a PR?"
-
-**If yes, and multiple ecosystems have updates, ask about PR strategy:**
-
-> "How would you like to organize the updates?"
-> 1. **One PR per ecosystem** - Separate PRs for npm, terraform, etc.
-> 2. **Single combined PR** - All updates in one PR
-
-## 8. Apply Updates and Create PR(s)
-
-Based on user's choice:
-
-### For Each PR to Create:
-
-1. **Create a feature branch:**
-   ```bash
-   # Ensure main is up-to-date before branching
-   git checkout main && git pull origin main
-
-   # If branch already exists from a previous run, delete it first:
-   git branch -D dependabot/<ecosystem>-updates 2>/dev/null || true
-
-   git checkout -b dependabot/<ecosystem>-updates
-   # or for combined: dependabot/all-updates
-   ```
-
-2. **Apply changes manually:**
-   From the `create_pull_request` JSON events, extract the `updated-dependency-files` array.
-   Each entry contains:
-   - `name` - The file path (e.g., `.github/workflows/ci.yml`)
-   - `content` - The new file content
-   - `directory` - The directory (usually `/`)
-
-   Use the Edit tool to update each file with the new content, or apply targeted edits
-   based on the `dependencies` array showing old → new versions.
-
-3. **Stage and commit changes:**
-   ```bash
-   git add <modified-files>
-   git commit -m "chore(deps): update <ecosystem> dependencies
-
-   Updated by Dependabot CLI
-
-   Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>"
-   ```
-
-4. **Push and create PR:**
-   ```bash
-   git push -u origin dependabot/<ecosystem>-updates
-   gh pr create --title "chore(deps): update <ecosystem> dependencies" \
-     --body "## Summary
-   - Dependency updates detected by Dependabot CLI
-
-   ## Updates
-   <list updates with old → new versions>
-
-   ## Test plan
-   - [ ] Verify build passes
-   - [ ] Verify tests pass
-   - [ ] Review changelog for breaking changes
-
-   🤖 Generated with [Claude Code](https://claude.com/claude-code)"
-   ```
-
-5. **Return to original branch** after PR creation.
-
 ## Important Notes
 
-- Always use `gh auth token` for authentication - never ask for tokens directly
+- Always use `gh auth token` for authentication — never ask for tokens directly
 - Some ecosystems may require additional configuration (e.g., private registries)
 - If dependabot fails for an ecosystem, report the error and continue with others
