@@ -40,11 +40,11 @@ Analyze the user's trigger phrase:
 - **"use dependabot for npm"** → Scan only `npm_and_yarn` ecosystem
 - **"use dependabot for github-actions"** or **"use dependabot for actions"** → Scan only `github_actions` ecosystem
 
-For the complete ecosystem alias mapping and detection methods, see `references/ecosystems.md`.
+See `references/ecosystems.md` for the complete alias mapping and detection methods.
 
 ## 3. Ecosystem Auto-Detection
 
-If scanning all ecosystems, detect which are present using file existence checks. See `references/ecosystems.md` for the full detection table.
+If scanning all ecosystems, detect which are present using file existence checks.
 
 Report detected ecosystems to the user before proceeding:
 > "Detected ecosystems: npm_and_yarn, github_actions, terraform"
@@ -75,12 +75,14 @@ Where `<ecosystem>` is the CLI ecosystem value (e.g., `npm_and_yarn`, `terraform
 
 ## 5. Parse Results from JSON Output
 
-The CLI outputs multiple JSON objects. Look for `create_pull_request` events to find updates:
+Filter the output for `create_pull_request` events — these contain the updates:
 
 ```bash
-# Filter for PR creation events (these contain the updates)
 <output> | grep '"type":"create_pull_request"'
 ```
+
+- ✅ **Updates found:** `create_pull_request` events in output
+- ❌ **No updates:** Only `mark_as_processed` events (grep returns nothing)
 
 Each `create_pull_request` event contains:
 - `dependencies[].name` - Package name
@@ -88,12 +90,6 @@ Each `create_pull_request` event contains:
 - `dependencies[].version` - Available version
 - `pr-title` - Suggested PR title
 - `updated-dependency-files[]` - The actual file changes to apply
-
-**Determining if updates exist:**
-- ✅ **Updates found:** One or more `create_pull_request` events in the output
-- ❌ **No updates:** Only `mark_as_processed` events appear (no `create_pull_request`)
-
-This is the definitive way to check — if you grep for `create_pull_request` and get no results, that ecosystem is up-to-date.
 
 ## 6. Present Results
 
