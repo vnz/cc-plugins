@@ -48,9 +48,8 @@ Optional but recommended:
 # macOS
 brew install shellcheck shfmt
 
-# Ubuntu/Debian
-sudo apt install shellcheck
-go install mvdan.cc/sh/v3/cmd/shfmt@latest
+# Ubuntu/Debian (22.04+)
+sudo apt install shellcheck shfmt
 
 # Other platforms
 # See https://github.com/koalaman/shellcheck#installing
