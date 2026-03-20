@@ -63,7 +63,7 @@ The command automatically determines the right review strategy:
            │
      ┌─────▼──────────┐
      │ Stop guards:    │
-     │ • cycle >= 3    │──── Any met ──→ Report & stop
+     │ • cycle >= 4    │──── Any met ──→ Report & stop
      │ • no progress   │
      │ • no changes    │
      └─────┬──────────┘
@@ -75,9 +75,9 @@ The command automatically determines the right review strategy:
 
 | Guard | Condition | Rationale |
 |-------|-----------|-----------|
-| **Max cycles** | Cycle count reaches 3 | Hard cap prevents runaway loops |
-| **No progress** | Findings >= previous cycle | Fixes aren't reducing issues |
-| **No changes** | `git diff --stat` empty after fixes | All findings were false positives or unfixable |
+| **Max cycles** | Cycle count reaches 4 | Hard cap prevents runaway loops |
+| **No progress** | All remaining findings were dismissed or already fixed | No new actionable findings to address |
+| **No changes** | `git diff --stat` empty after fixes | All findings were dismissed or already fixed |
 
 Any **one** of these triggers a stop.
 

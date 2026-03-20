@@ -39,7 +39,7 @@ Codex findings fall into severity categories:
 | **P3 — Minor** | Nice to fix, safe to skip | Style inconsistencies, naming suggestions, minor simplifications |
 | **False positive** | Note and skip | Findings that don't apply to the actual context |
 
-When the fix-and-review loop runs, fix P1 and P2 findings. Skip P3 findings and false positives — note them in the final report but do not attempt to fix.
+When the fix-and-review loop runs, use judgment to triage each finding: fix what's clearly correct and actionable, dismiss false positives. Severity informs priority but doesn't mechanically determine the action — a P2 may be irrelevant in context, and a P3 may be worth fixing.
 
 ## When Codex Is Unavailable
 

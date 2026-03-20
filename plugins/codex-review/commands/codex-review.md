@@ -34,9 +34,10 @@ Read the review output. If there are no findings, report that the review is clea
 
 If findings exist, enter a fix-and-review loop:
 
-1. **Triage findings** by severity:
-   - **P1 (critical)** and **P2 (important)**: Fix directly — edit the code.
-   - **P3 (minor)** and **false positives**: Note them but do not fix.
+1. **Triage each finding** — use judgment, not rigid severity rules:
+   - Fix findings that are clearly correct and actionable.
+   - Dismiss false positives and findings that don't apply to the context.
+   - For borderline findings, fix if the improvement is clear; dismiss if debatable.
 2. **Check for changes** — run `git diff --stat` after fixing.
 
 ### Anti-Loop Safety
@@ -45,9 +46,9 @@ After each fix step, check these guards **before** re-running the review. **Stop
 
 | Guard | Condition |
 |-------|-----------|
-| No changes | `git diff --stat` is empty after the fix step (all findings were false positives or unfixable) |
-| Max cycles | Cycle count reaches **3** |
-| No progress | Finding count is same or higher than previous cycle |
+| No changes | `git diff --stat` is empty after the fix step (all findings were dismissed or already fixed) |
+| Max cycles | Cycle count reaches **4** |
+| No progress | All remaining findings from the current cycle were dismissed or already fixed in a previous cycle |
 
 If none of the stop conditions are met, go back to **Step 2** and re-run the review.
 
