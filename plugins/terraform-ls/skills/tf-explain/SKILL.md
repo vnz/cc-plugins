@@ -1,5 +1,6 @@
 ---
-description: Explain Terraform resources, data sources, modules, and HCL syntax with provider-specific context. Use when user asks "what does this resource do", "explain this terraform", or needs help understanding infrastructure code.
+name: Terraform Explanation
+description: This skill should be used when the user asks to "explain this terraform resource", "what does this resource do", "explain this terraform", "help me understand this HCL", or needs help understanding Terraform resources, data sources, modules, and HCL syntax with provider-specific context.
 ---
 
 # Terraform Explanation Skill

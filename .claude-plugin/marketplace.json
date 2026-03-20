@@ -19,7 +19,7 @@
     {
       "name": "terraform-ls",
       "description": "Terraform language server (terraform-ls) for code intelligence, go-to-definition, find-references, and hover docs",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "source": "./plugins/terraform-ls",
       "category": "development",
       "author": {
