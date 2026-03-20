@@ -1,0 +1,11 @@
+{
+  "name": "codex-review",
+  "version": "1.0.0",
+  "description": "Automated code review using OpenAI Codex CLI with auto-detection of review mode and iterative fix-and-review loop",
+  "license": "MIT",
+  "author": {
+    "name": "vnz"
+  },
+  "repository": "https://github.com/vnz/cc-plugins",
+  "keywords": ["code-review", "codex", "review", "quality", "ci"]
+}

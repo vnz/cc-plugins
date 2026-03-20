@@ -26,6 +26,7 @@ Personal Claude Code plugin marketplace by vnz.
 | `bash-ls` | Bash language server for code intelligence, diagnostics, and formatting in shell scripts |
 | `yaml-ls` | YAML language server for code intelligence (go-to-definition, find-references, hover, diagnostics) |
 | `dependabot` | Check for dependency updates using Dependabot CLI with auto-detection of package managers |
+| `codex-review` | Automated code review with Codex CLI, auto-detection, and iterative fix-and-review loop |
 
 ## Usage
 
@@ -36,6 +37,7 @@ After adding the marketplace, install any plugin:
 /plugin install bash-ls@cc-plugins-vnz
 /plugin install yaml-ls@cc-plugins-vnz
 /plugin install dependabot@cc-plugins-vnz
+/plugin install codex-review@cc-plugins-vnz
 ```
 
 ## Development

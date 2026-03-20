@@ -65,6 +65,16 @@
       "author": {
         "name": "vnz"
       }
+    },
+    {
+      "name": "codex-review",
+      "description": "Automated code review using Codex CLI with autonomous fix-review cycles",
+      "version": "2.0.0",
+      "source": "./plugins/codex-review",
+      "category": "development",
+      "author": {
+        "name": "vnz"
+      }
     }
   ]
 }
