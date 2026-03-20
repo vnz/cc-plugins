@@ -23,6 +23,7 @@ Personal Claude Code plugin marketplace by vnz.
 |--------|-------------|
 | `date-context` | Injects current date/time at session start to fix web search year issues |
 | `terraform-ls` | Terraform language server for code intelligence (go-to-definition, hover, diagnostics) |
+| `bash-ls` | Bash language server for code intelligence, diagnostics, and formatting in shell scripts |
 | `dependabot` | Check for dependency updates using Dependabot CLI with auto-detection of package managers |
 
 ## Usage
@@ -31,6 +32,7 @@ After adding the marketplace, install any plugin:
 ```bash
 /plugin install date-context@cc-plugins-vnz
 /plugin install terraform-ls@cc-plugins-vnz
+/plugin install bash-ls@cc-plugins-vnz
 /plugin install dependabot@cc-plugins-vnz
 ```
 
