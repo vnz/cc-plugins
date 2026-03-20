@@ -1,0 +1,11 @@
+{
+  "name": "bash-ls",
+  "version": "1.0.0",
+  "description": "Bash language server (bash-language-server) for code intelligence, diagnostics, and formatting in shell scripts (.sh, .bash)",
+  "license": "MIT",
+  "author": {
+    "name": "vnz"
+  },
+  "repository": "https://github.com/vnz/cc-plugins",
+  "keywords": ["bash", "shell", "sh", "lsp", "language-server", "shellcheck", "shfmt"]
+}

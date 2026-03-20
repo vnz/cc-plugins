@@ -35,6 +35,16 @@
       "author": {
         "name": "vnz"
       }
+    },
+    {
+      "name": "bash-ls",
+      "description": "Bash language server for code intelligence, diagnostics, and formatting in shell scripts",
+      "version": "1.0.0",
+      "source": "./plugins/bash-ls",
+      "category": "development",
+      "author": {
+        "name": "vnz"
+      }
     }
   ]
 }
