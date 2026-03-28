@@ -45,6 +45,16 @@
       "author": {
         "name": "vnz"
       }
+    },
+    {
+      "name": "yaml-ls",
+      "description": "YAML language server (yaml-language-server) for code intelligence, go-to-definition, find-references, and hover docs",
+      "version": "1.0.0",
+      "source": "./plugins/yaml-ls",
+      "category": "development",
+      "author": {
+        "name": "vnz"
+      }
     }
   ]
 }
