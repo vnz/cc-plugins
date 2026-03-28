@@ -1,0 +1,11 @@
+{
+  "name": "yaml-ls",
+  "version": "1.0.0",
+  "description": "YAML language server (yaml-language-server) for code intelligence, go-to-definition, find-references, and hover docs in YAML files (.yaml, .yml)",
+  "license": "MIT",
+  "author": {
+    "name": "vnz"
+  },
+  "repository": "https://github.com/vnz/cc-plugins",
+  "keywords": ["yaml", "yml", "lsp", "language-server", "schema", "validation"]
+}
