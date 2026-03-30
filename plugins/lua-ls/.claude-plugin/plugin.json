@@ -1,0 +1,11 @@
+{
+  "name": "lua-ls",
+  "version": "1.0.0",
+  "description": "Lua language server (lua-language-server) for code intelligence, go-to-definition, find-references, and hover docs in Lua files (.lua)",
+  "license": "MIT",
+  "author": {
+    "name": "vnz"
+  },
+  "repository": "https://github.com/vnz/cc-plugins",
+  "keywords": ["lua", "luajit", "lsp", "language-server"]
+}

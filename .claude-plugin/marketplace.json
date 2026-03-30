@@ -55,6 +55,16 @@
       "author": {
         "name": "vnz"
       }
+    },
+    {
+      "name": "lua-ls",
+      "description": "Lua language server (lua-language-server) for code intelligence, go-to-definition, find-references, and hover docs",
+      "version": "1.0.0",
+      "source": "./plugins/lua-ls",
+      "category": "development",
+      "author": {
+        "name": "vnz"
+      }
     }
   ]
 }
