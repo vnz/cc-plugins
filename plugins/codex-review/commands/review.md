@@ -40,13 +40,8 @@ command -v codex >/dev/null 2>&1 && echo "codex found" || echo "codex not found"
 
 Determine which mode to use from `$ARGUMENTS`:
 
-1. If `--base <branch>` is specified, use: `codex review --base origin/<branch>`
-2. If type is `committed`, check for an open PR:
-   ```bash
-   gh pr view --json baseRefName -q .baseRefName 2>/dev/null
-   ```
-   - If a base branch is found, use: `codex review --base origin/<base>`
-   - Otherwise, use: `codex review --uncommitted`
+1. If `--base <branch>` is specified, use: `codex review --base <branch>` (pass the ref as-is — the user may specify `origin/main`, `upstream/dev`, or a local branch)
+2. If type is `committed`, use: `codex review` (no flags — reviews committed changes by default)
 3. If type is `uncommitted`, use: `codex review --uncommitted`
 4. If `--commit <SHA>` is specified, use: `codex review --commit <SHA>`
 5. Default (no arguments): auto-detect:
