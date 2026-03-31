@@ -68,7 +68,7 @@
     },
     {
       "name": "codex-review",
-      "description": "Automated code review using Codex CLI with autonomous fix-review cycles",
+      "description": "AI-powered code review in Claude Code using the Codex CLI",
       "version": "2.0.0",
       "source": "./plugins/codex-review",
       "category": "development",

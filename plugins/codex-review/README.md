@@ -1,15 +1,16 @@
 # codex-review
 
-Automated code review plugin for Claude Code using the OpenAI Codex CLI. Provides a `/codex-review` slash command with automatic mode detection and an iterative fix-and-review loop.
+AI-powered code review plugin for Claude Code using the [Codex CLI](https://github.com/openai/codex). Provides a `/codex-review:review` command, a code-review skill for autonomous workflows, and a specialized review agent.
 
 ## Features
 
 | Feature | Description |
 |---------|-------------|
 | **Auto-detection** | Automatically selects `--uncommitted`, `--base`, or `--commit` mode |
-| **Fix-and-review loop** | Fixes findings and re-reviews until clean |
+| **Proactive review** | Skill triggers review after code changes without being asked |
+| **Fix-and-review loop** | Fixes findings and re-reviews until clean (max 4 cycles) |
 | **Anti-loop safety** | Three independent guards prevent runaway loops |
-| **Background execution** | Reviews run as background tasks |
+| **Review agent** | Specialized subagent for thorough, autonomous code analysis |
 | **Silent fallback** | Does nothing if codex is not installed |
 
 ## Prerequisites
@@ -29,23 +30,47 @@ Automated code review plugin for Claude Code using the OpenAI Codex CLI. Provide
 
 ## Usage
 
+### Command
+
 ```bash
 # Auto-detect mode (most common)
-/codex-review
+/codex-review:review
+
+# Review uncommitted changes only
+/codex-review:review uncommitted
+
+# Review against a specific branch
+/codex-review:review --base main
 
 # Review a specific commit
-/codex-review --commit abc1234
+/codex-review:review --commit abc1234
 ```
 
 ### Mode Detection
 
 The command automatically determines the right review strategy:
 
-1. If `--commit <SHA>` is passed, review that commit
+1. If `--base <branch>` is passed, review the diff against that branch
 2. If the current branch has an open PR, review the full PR diff against its base
 3. Otherwise, review all uncommitted changes
 
-## How the Loop Works
+### Skill (Autonomous)
+
+The code-review skill triggers automatically when:
+
+- You ask Claude to review code
+- Claude finishes implementing a feature (proactive review)
+- You ask about code quality, bugs, or security
+
+### Agent
+
+The code-reviewer agent can be used as a subagent for thorough, focused review:
+
+```
+Use the code-reviewer agent to review these changes
+```
+
+## How the Fix Loop Works
 
 ```
 ┌─────────────────────┐
@@ -81,10 +106,26 @@ The command automatically determines the right review strategy:
 
 Any **one** of these triggers a stop.
 
+## Plugin Structure
+
+```
+plugins/codex-review/
+├── .claude-plugin/
+│   └── plugin.json
+├── commands/
+│   └── review.md              # /codex-review:review command
+├── skills/
+│   └── code-review/
+│       └── SKILL.md           # When/how to review, autonomous workflow
+├── agents/
+│   └── code-reviewer.md       # Specialized review subagent
+└── README.md
+```
+
 ## Troubleshooting
 
 ### Command not visible
-Run `/help` and look for `codex-review`. If missing, reinstall the plugin and restart Claude Code.
+Run `/help` and look for `codex-review:review`. If missing, reinstall the plugin and restart Claude Code.
 
 ### Codex not found
 The command silently exits if `codex` is not in your PATH. Install it:
