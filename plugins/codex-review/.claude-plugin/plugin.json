@@ -1,0 +1,11 @@
+{
+  "name": "codex-review",
+  "version": "2.0.0",
+  "description": "AI-powered code review in Claude Code using the Codex CLI",
+  "license": "MIT",
+  "author": {
+    "name": "vnz"
+  },
+  "repository": "https://github.com/vnz/cc-plugins",
+  "keywords": ["code-review", "codex", "review", "quality", "ai"]
+}
