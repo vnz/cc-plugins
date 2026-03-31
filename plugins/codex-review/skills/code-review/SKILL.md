@@ -1,6 +1,6 @@
 ---
 name: code-review
-description: Reviews code changes using Codex CLI. Use when user asks for code review, wants to check code quality, find bugs, or when you should proactively review code you just wrote. Activates on "review my code", "check for bugs", "code review", "run codex", or after implementing features.
+description: Reviews code changes using Codex CLI. Use when user asks for code review, wants to check code quality, find bugs, or wants autonomous fix-review cycles. Activates on "review my code", "check for bugs", "code review", "run codex", or "use codex review".
 ---
 
 # Codex Code Review
@@ -18,8 +18,6 @@ When user asks to:
 - Run codex / Use codex review
 - Implement a feature and review it
 - Fix issues found in review
-
-**Proactive review**: After implementing code changes, run `/codex-review:review` without waiting for the user to ask. Skip review only for trivial changes that don't touch code (docs-only, config-only, version bumps).
 
 **Only review your own code**: Only use codex review for code you authored in the current session. When reviewing someone else's PR or code, review it directly — read the diff yourself and provide feedback without codex.
 

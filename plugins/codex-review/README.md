@@ -7,7 +7,6 @@ AI-powered code review plugin for Claude Code using the [Codex CLI](https://gith
 | Feature | Description |
 |---------|-------------|
 | **Auto-detection** | Automatically selects `--uncommitted`, `--base`, or `--commit` mode |
-| **Proactive review** | Skill triggers review after code changes without being asked |
 | **Fix-and-review loop** | Fixes findings and re-reviews until clean (max 4 cycles) |
 | **Anti-loop safety** | Three independent guards prevent runaway loops |
 | **Review agent** | Specialized subagent for thorough, autonomous code analysis |
@@ -54,13 +53,13 @@ The command automatically determines the right review strategy:
 2. If the current branch has an open PR, review the full PR diff against its base
 3. Otherwise, review all uncommitted changes
 
-### Skill (Autonomous)
+### Skill
 
-The code-review skill triggers automatically when:
+The code-review skill triggers when:
 
 - You ask Claude to review code
-- Claude finishes implementing a feature (proactive review)
 - You ask about code quality, bugs, or security
+- You request implementation + review in one go
 
 ### Agent
 
