@@ -65,9 +65,19 @@ Do not pass `--local .`: the CLI copies that directory's `.git` into the updater
 SCAN_DIR=$(mktemp -d) && git clone --quiet --depth 1 "file://$(git rev-parse --show-toplevel)" "$SCAN_DIR" && echo "$SCAN_DIR"
 ```
 
+Shell variables do not carry over between commands, so pass the printed path literally as `<scan-dir>`.
+
 A fresh clone has no hooks installed, keeps tracked files tracked (Dependabot runs `git clean -fx` before fetching, which deletes untracked files), and gives the CLI nothing to commit, so the scan runs on the real commit. It scans that commit only: if `git status --porcelain` prints anything, tell the user that uncommitted changes are not scanned.
 
-Shell variables do not carry over between commands, so pass the printed path literally as `<scan-dir>`. For each ecosystem to scan, run the Dependabot CLI:
+If the repository has a `.gitmodules` file, populate submodules at their recorded commits, as Dependabot does on GitHub. A plain clone leaves them empty, and a manifest that points into one (such as a Cargo `path` dependency) then fails:
+
+```bash
+git -C <scan-dir> remote set-url origin "$(git remote get-url origin)" && git -C <scan-dir> submodule update --quiet --init --recursive --depth 1
+```
+
+Setting the remote first makes relative submodule URLs (`../lib.git`) resolve against GitHub instead of the local clone source. If this fails, for example on a private submodule you cannot access, continue the scan and tell the user that files inside submodules are missing from it.
+
+For each ecosystem to scan, run the Dependabot CLI:
 
 ```bash
 # Get the repository name dynamically

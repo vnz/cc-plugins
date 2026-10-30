@@ -65,7 +65,7 @@ LOCAL_GITHUB_ACCESS_TOKEN=$(gh auth token) dependabot update <ecosystem> <owner/
 ```
 
 - `<scan-dir>` is a `git clone --depth 1` of the current commit. Pointing `--local` at the repository itself fails when git hooks are installed (pre-commit, prek, husky): the CLI commits inside its container, the hook runs there, and its tool is missing. A fresh clone has no hooks.
-- The scan covers the current commit, not uncommitted changes.
+- The scan covers the current commit, not uncommitted changes. Submodules are populated at their recorded commits, as Dependabot does on GitHub.
 - `submodules` is scanned without `--local`, from the default branch on GitHub: its fetcher looks up each submodule through the GitHub API at the scanned commit.
 - Output is JSON lines; the updates are in `create_pull_request` events.
 - Output can be large (40KB+).
