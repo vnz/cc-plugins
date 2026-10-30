@@ -39,5 +39,13 @@ prek run --all-files
 
 ## Pre-commit Hooks
 
-- `json-validate` - Validates all JSON files with jq
-- `script-permissions` - Ensures .sh files are executable
+`prek run --all-files` (`just all`) is what CI runs:
+
+- `shfmt`, `justfmt` - Format shell scripts and the justfile
+- `shellcheck`, `json-validate`, `script-permissions` - Lint shell, JSON, and .sh executable bits
+- `validate-plugins` - `scripts/validate-plugins.sh`: versions agree between `plugin.json` and `marketplace.json`, required files exist, and `claude plugin validate` passes for the marketplace and each plugin (fails in CI without the `claude` CLI, skipped locally)
+
+## CI and Dependencies
+
+- CI pins the Claude CLI with `CLAUDE_CLI_VERSION` in `.github/workflows/ci.yml`, because `claude plugin validate` rules change between releases. Bump it only after `just validate` passes locally on the new version.
+- Actions are pinned to a commit SHA with a `# vX.Y.Z` comment. Dependabot (`.github/dependabot.yml`) bumps them and the `.pre-commit-config.yaml` hook revs weekly.

@@ -6,7 +6,7 @@
 #   lint     → shellcheck, json-validate, script-permissions (read-only)
 #   validate → validate-plugins (structure checks)
 
-set quiet := true
+set quiet
 
 # Don't echo recipe lines
 

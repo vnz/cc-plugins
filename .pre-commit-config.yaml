@@ -15,7 +15,7 @@ repos:
   # │ FMT - Formatters (modify files)                                         │
   # └─────────────────────────────────────────────────────────────────────────┘
   - repo: https://github.com/scop/pre-commit-shfmt
-    rev: v3.10.0-1
+    rev: v3.14.1-1
     hooks:
       - id: shfmt
         name: Format shell scripts
