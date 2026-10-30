@@ -43,7 +43,7 @@ Trigger aliases and detection files are in [`skills/dependabot/references/ecosys
 
 1. **Prerequisites check** - Verifies `dependabot`, `gh`, and `jq` are installed
 2. **Ecosystem detection** - Finds package managers based on config files
-3. **Update scan** - Runs `dependabot update` for each ecosystem on a copy of the working tree
+3. **Update scan** - Runs `dependabot update` for each ecosystem on a fresh clone of the current commit
 4. **Results presentation** - Shows available updates in a table
 
 The plugin only scans. It does not edit files or open PRs.
@@ -64,8 +64,9 @@ The Dependabot CLI outputs JSON describing available updates (it never modifies 
 LOCAL_GITHUB_ACCESS_TOKEN=$(gh auth token) dependabot update <ecosystem> <owner/repo> --local <scan-dir>
 ```
 
-- `<scan-dir>` is a temporary copy of the working tree without `.git`. Pointing `--local` at the repository itself fails when git hooks are installed (pre-commit, prek, husky): the CLI commits inside its container, the hook runs there, and its tool is missing.
-- The copy includes uncommitted changes and leaves out ignored files.
+- `<scan-dir>` is a `git clone --depth 1` of the current commit. Pointing `--local` at the repository itself fails when git hooks are installed (pre-commit, prek, husky): the CLI commits inside its container, the hook runs there, and its tool is missing. A fresh clone has no hooks.
+- The scan covers the current commit, not uncommitted changes.
+- `submodules` is scanned without `--local`, from the default branch on GitHub: its fetcher looks up each submodule through the GitHub API at the scanned commit.
 - Output is JSON lines; the updates are in `create_pull_request` events.
 - Output can be large (40KB+).
 

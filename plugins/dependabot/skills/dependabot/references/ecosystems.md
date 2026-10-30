@@ -82,7 +82,7 @@ Detect which ecosystems are present using file existence checks:
 | Julia | `julia` | File exists: `Project.toml` or `JuliaProject.toml` |
 | Nix | `nix` | File exists: `flake.nix` and `flake.lock` |
 | vcpkg | `vcpkg` | File exists: `vcpkg.json` or `vcpkg-configuration.json` |
-| Git submodules | `submodules` | File exists: `.gitmodules` |
+| Git submodules | `submodules` | File exists: `.gitmodules` (scan without `--local`, see SKILL.md step 4) |
 
 ## Shared Manifests
 

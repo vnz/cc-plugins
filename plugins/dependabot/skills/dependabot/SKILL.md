@@ -59,11 +59,13 @@ If a specific ecosystem was requested but not detected:
 
 ## 4. Run Dependabot Updates
 
-Do not pass `--local .`: the CLI copies that directory's `.git` into the updater container and commits there, so installed git hooks (pre-commit, prek, husky) run inside the container and the update fails with `failed to initialize clone dir`. Scan a copy of the working tree without `.git` instead. It keeps uncommitted changes and leaves out ignored files such as `node_modules/`:
+Do not pass `--local .`: the CLI copies that directory's `.git` into the updater container and runs `git add . && git commit` there, so installed git hooks (pre-commit, prek, husky) run inside the container and the update fails with `failed to initialize clone dir`. Scan a fresh clone of the current commit instead:
 
 ```bash
-SCAN_DIR=$(mktemp -d) && git ls-files -co --exclude-standard -z | tar --null -cf - -T - | tar -xf - -C "$SCAN_DIR" && echo "$SCAN_DIR"
+SCAN_DIR=$(mktemp -d) && git clone --quiet --depth 1 "file://$(git rev-parse --show-toplevel)" "$SCAN_DIR" && echo "$SCAN_DIR"
 ```
+
+A fresh clone has no hooks installed, keeps tracked files tracked (Dependabot runs `git clean -fx` before fetching, which deletes untracked files), and gives the CLI nothing to commit, so the scan runs on the real commit. It scans that commit only: if `git status --porcelain` prints anything, tell the user that uncommitted changes are not scanned.
 
 Shell variables do not carry over between commands, so pass the printed path literally as `<scan-dir>`. For each ecosystem to scan, run the Dependabot CLI:
 
@@ -75,12 +77,14 @@ LOCAL_GITHUB_ACCESS_TOKEN=$(gh auth token) dependabot update <ecosystem> "$REPO"
 
 Where `<ecosystem>` is the CLI ecosystem value (e.g., `npm_and_yarn`, `terraform`, `github_actions`).
 
+**Exception — `submodules`:** omit `--local <scan-dir>`. The submodule fetcher looks up each submodule through the GitHub API at the scanned commit, so the commit must exist on GitHub. Without `--local`, the CLI clones the default branch from GitHub; say so when reporting its results.
+
 **Run ecosystems serially** (one at a time) to avoid output confusion. When all are done, remove the copy with `rm -rf <scan-dir>`.
 
 **Understanding the output:**
 - The CLI outputs **JSON lines** (one JSON object per line), NOT human-readable tables
 - The CLI **never modifies files directly** - it only outputs data describing what would change
-- The `--local <scan-dir>` flag scans that directory instead of cloning from GitHub (NOT a "dry-run" flag)
+- The `--local <scan-dir>` flag scans that clone instead of cloning from GitHub (NOT a "dry-run" flag)
 - Output can be very large (40KB+) - it may be truncated
 - **Important:** Use `2>&1` to capture both stdout and stderr, as the CLI mixes log messages (stderr) with JSON output (stdout)
 
