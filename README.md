@@ -21,10 +21,10 @@ Personal Claude Code plugin marketplace by vnz.
 
 | Plugin | Description |
 |--------|-------------|
-| `date-context` | Injects current date/time at session start to fix web search year issues |
 | `terraform-ls` | Terraform language server for code intelligence (go-to-definition, hover, diagnostics) |
 | `bash-ls` | Bash language server for code intelligence, diagnostics, and formatting in shell scripts |
 | `yaml-ls` | YAML language server for code intelligence (go-to-definition, find-references, hover, diagnostics) |
+| `lua-ls` | Lua language server for code intelligence (go-to-definition, find-references, hover, diagnostics) |
 | `dependabot` | Check for dependency updates using Dependabot CLI with auto-detection of package managers |
 | `codex-review` | Automated code review with Codex CLI, auto-detection, and iterative fix-and-review loop |
 
@@ -32,10 +32,10 @@ Personal Claude Code plugin marketplace by vnz.
 
 After adding the marketplace, install any plugin:
 ```bash
-/plugin install date-context@cc-plugins-vnz
 /plugin install terraform-ls@cc-plugins-vnz
 /plugin install bash-ls@cc-plugins-vnz
 /plugin install yaml-ls@cc-plugins-vnz
+/plugin install lua-ls@cc-plugins-vnz
 /plugin install dependabot@cc-plugins-vnz
 /plugin install codex-review@cc-plugins-vnz
 ```

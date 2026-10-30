@@ -7,6 +7,8 @@ set -euo pipefail
 # 1. Version matches between plugin.json and marketplace.json
 # 2. Required files exist (plugin.json, README.md)
 # 3. Shell script syntax is valid
+# 4. `claude plugin validate` passes for the marketplace and each plugin
+#    (required in CI, skipped locally when the claude CLI is missing)
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT_DIR="$(dirname "$SCRIPT_DIR")"
@@ -31,6 +33,27 @@ MARKETPLACE_JSON="$ROOT_DIR/.claude-plugin/marketplace.json"
 if [[ ! -f "$MARKETPLACE_JSON" ]]; then
   log_error "marketplace.json not found at $MARKETPLACE_JSON"
   exit 1
+fi
+
+# Run the official validator on a marketplace or plugin directory
+claude_validate() {
+  local output
+  if output=$(claude plugin validate "$1" 2>&1); then
+    log_success "claude plugin validate"
+  else
+    echo "$output" >&2
+    log_error "claude plugin validate failed: $1"
+  fi
+}
+
+has_claude=false
+if command -v claude >/dev/null 2>&1; then
+  has_claude=true
+  echo "Validating marketplace"
+  claude_validate "$ROOT_DIR"
+  echo ""
+elif [[ -n "${CI:-}" ]]; then
+  log_error "claude CLI not found: CI must install it to run claude plugin validate"
 fi
 
 # Get list of plugins from marketplace.json
@@ -87,6 +110,10 @@ for plugin_name in $plugins; do
       fi
     fi
   done
+
+  if [[ "$has_claude" == true ]]; then
+    claude_validate "$plugin_dir"
+  fi
 
   echo ""
 done

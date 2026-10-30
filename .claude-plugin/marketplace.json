@@ -7,16 +7,6 @@
   },
   "plugins": [
     {
-      "name": "date-context",
-      "description": "Injects current date/time context at session start to fix web search year issues",
-      "version": "1.0.1",
-      "source": "./plugins/date-context",
-      "category": "productivity",
-      "author": {
-        "name": "vnz"
-      }
-    },
-    {
       "name": "terraform-ls",
       "description": "Terraform language server (terraform-ls) for code intelligence, go-to-definition, find-references, and hover docs",
       "version": "1.0.1",
