@@ -49,7 +49,7 @@ Consult `references/ecosystems.md` for the complete alias-to-ecosystem mapping (
 
 ## 3. Ecosystem Auto-Detection
 
-If scanning all ecosystems, detect which are present using file existence checks.
+If scanning all ecosystems, detect which are present using file existence checks. When ecosystems share a manifest (`package.json`, `pyproject.toml`, `*.tf`), follow the "Shared Manifests" rules in `references/ecosystems.md`.
 
 Report detected ecosystems to the user before proceeding:
 > "Detected ecosystems: npm_and_yarn, github_actions, terraform"
@@ -59,22 +59,42 @@ If a specific ecosystem was requested but not detected:
 
 ## 4. Run Dependabot Updates
 
+Do not pass `--local .`: the CLI copies that directory's `.git` into the updater container and runs `git add . && git commit` there, so installed git hooks (pre-commit, prek, husky) run inside the container and the update fails with `failed to initialize clone dir`. Scan a fresh clone of the current commit instead:
+
+```bash
+SCAN_DIR=$(mktemp -d) && git clone --quiet --depth 1 "file://$(git rev-parse --show-toplevel)" "$SCAN_DIR" && echo "$SCAN_DIR"
+```
+
+Shell variables do not carry over between commands, so pass the printed path literally as `<scan-dir>`.
+
+A fresh clone has no hooks installed, keeps tracked files tracked (Dependabot runs `git clean -fx` before fetching, which deletes untracked files), and gives the CLI nothing to commit, so the scan runs on the real commit. It scans that commit only: if `git status --porcelain` prints anything, tell the user that uncommitted changes are not scanned.
+
+If the repository has a `.gitmodules` file, populate submodules at their recorded commits, as Dependabot does on GitHub. A plain clone leaves them empty, and a manifest that points into one (such as a Cargo `path` dependency) then fails:
+
+```bash
+git -C <scan-dir> remote set-url origin "$(git remote get-url origin)" && git -C <scan-dir> submodule update --quiet --init --recursive --depth 1
+```
+
+Setting the remote first makes relative submodule URLs (`../lib.git`) resolve against GitHub instead of the local clone source. If this fails, for example on a private submodule you cannot access, continue the scan and tell the user that files inside submodules are missing from it.
+
 For each ecosystem to scan, run the Dependabot CLI:
 
 ```bash
 # Get the repository name dynamically
 REPO=$(gh repo view --json owner,name --jq '.owner.login + "/" + .name')
-LOCAL_GITHUB_ACCESS_TOKEN=$(gh auth token) dependabot update <ecosystem> "$REPO" --local . 2>&1
+LOCAL_GITHUB_ACCESS_TOKEN=$(gh auth token) dependabot update <ecosystem> "$REPO" --local <scan-dir> 2>&1
 ```
 
 Where `<ecosystem>` is the CLI ecosystem value (e.g., `npm_and_yarn`, `terraform`, `github_actions`).
 
-**Run ecosystems serially** (one at a time) to avoid output confusion.
+**Exception — `submodules`:** omit `--local <scan-dir>`. The submodule fetcher looks up each submodule through the GitHub API at the scanned commit, so the commit must exist on GitHub. Without `--local`, the CLI clones the default branch from GitHub; say so when reporting its results.
+
+**Run ecosystems serially** (one at a time) to avoid output confusion. When all are done, remove the copy with `rm -rf <scan-dir>`.
 
 **Understanding the output:**
 - The CLI outputs **JSON lines** (one JSON object per line), NOT human-readable tables
 - The CLI **never modifies files directly** - it only outputs data describing what would change
-- The `--local .` flag uses your working directory instead of cloning from GitHub (NOT a "dry-run" flag)
+- The `--local <scan-dir>` flag scans that clone instead of cloning from GitHub (NOT a "dry-run" flag)
 - Output can be very large (40KB+) - it may be truncated
 - **Important:** Use `2>&1` to capture both stdout and stderr, as the CLI mixes log messages (stderr) with JSON output (stdout)
 

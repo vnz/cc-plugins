@@ -6,6 +6,8 @@ Check for dependency updates across your project using the official [Dependabot 
 
 1. **Dependabot CLI** - Install from https://github.com/dependabot/cli
 2. **GitHub CLI (gh)** - For authentication via `gh auth token`
+3. **Docker** - The Dependabot CLI runs each update in a container
+4. **jq** (recommended) - For parsing the CLI's JSON output
 
 ## Installation
 
@@ -33,38 +35,18 @@ use dependabot for github-actions
 
 ## Supported Ecosystems
 
-| Ecosystem | Trigger Aliases | Detection Files |
-|-----------|-----------------|-----------------|
-| GitHub Actions | `github-actions`, `actions`, `workflows` | `.github/workflows/*.yml` |
-| Terraform | `terraform`, `tf` | `*.tf` |
-| npm/yarn/pnpm | `npm`, `yarn`, `pnpm` | `package.json` |
-| Go | `go`, `golang` | `go.mod` |
-| Python | `python`, `pip`, `pipenv` | `requirements.txt`, `pyproject.toml`, `Pipfile`, `setup.py` |
-| Ruby | `ruby`, `bundler`, `gems` | `Gemfile` |
-| Rust | `rust`, `cargo` | `Cargo.toml` |
-| Docker | `docker` | `Dockerfile`, `*.dockerfile`, `docker-compose.yml` |
-| Maven | `maven`, `java` | `pom.xml` |
-| Gradle | `gradle` | `build.gradle`, `build.gradle.kts` |
-| Composer | `composer`, `php` | `composer.json` |
-| NuGet | `nuget`, `dotnet`, `csharp` | `*.csproj`, `packages.config`, `*.fsproj` |
-| Helm | `helm` | `Chart.yaml` |
-| Pub (Dart) | `dart`, `flutter`, `pub` | `pubspec.yaml` |
-| Swift | `swift` | `Package.swift` |
-| Hex (Elixir) | `elixir`, `hex` | `mix.exs` |
+Every ecosystem the Dependabot CLI supports except the beta-only `apm`: GitHub Actions, pre-commit, Terraform, OpenTofu, npm/yarn/pnpm, Bun, Deno, Go, pip, uv, Conda, Bundler, Cargo, Rust toolchain, Docker, Docker Compose, Dev Containers, Maven, Gradle, sbt, Bazel, Composer, NuGet, .NET SDK, Helm, Pub, Swift, Hex, Elm, Julia, Nix, vcpkg, and git submodules.
+
+Trigger aliases and detection files are in [`skills/dependabot/references/ecosystems.md`](skills/dependabot/references/ecosystems.md).
 
 ## Workflow
 
-1. **Prerequisites check** - Verifies `dependabot` and `gh` CLIs are installed
+1. **Prerequisites check** - Verifies `dependabot`, `gh`, and `jq` are installed
 2. **Ecosystem detection** - Finds package managers based on config files
-3. **Update scan** - Runs `dependabot update --local` for each ecosystem
+3. **Update scan** - Runs `dependabot update` for each ecosystem on a fresh clone of the current commit
 4. **Results presentation** - Shows available updates in a table
-5. **PR creation** (optional) - Offers to apply updates and open PR(s)
 
-## PR Strategy
-
-When updates are found, you'll be asked:
-- **One PR per ecosystem** - Separate PRs for npm, terraform, etc.
-- **Single combined PR** - All updates in one PR
+The plugin only scans. It does not edit files or open PRs.
 
 ## Authentication
 
@@ -79,13 +61,14 @@ gh auth login
 The Dependabot CLI outputs JSON describing available updates (it never modifies files directly):
 
 ```bash
-LOCAL_GITHUB_ACCESS_TOKEN=$(gh auth token) dependabot update <ecosystem> <owner/repo> --local .
+LOCAL_GITHUB_ACCESS_TOKEN=$(gh auth token) dependabot update <ecosystem> <owner/repo> --local <scan-dir>
 ```
 
-- The `--local .` flag means "use local filesystem as source" (avoids cloning from GitHub)
-- Output is JSON lines containing `create_pull_request` events with update details
-- Claude parses the JSON and applies changes using the Edit tool
-- Output can be large (40KB+) - relevant data is in `create_pull_request` events
+- `<scan-dir>` is a `git clone --depth 1` of the current commit. Pointing `--local` at the repository itself fails when git hooks are installed (pre-commit, prek, husky): the CLI commits inside its container, the hook runs there, and its tool is missing. A fresh clone has no hooks.
+- The scan covers the current commit, not uncommitted changes. Submodules are populated at their recorded commits, as Dependabot does on GitHub.
+- `submodules` is scanned without `--local`, from the default branch on GitHub: its fetcher looks up each submodule through the GitHub API at the scanned commit.
+- Output is JSON lines; the updates are in `create_pull_request` events.
+- Output can be large (40KB+).
 
 ## Links
 
