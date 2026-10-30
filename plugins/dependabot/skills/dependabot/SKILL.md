@@ -49,7 +49,7 @@ Consult `references/ecosystems.md` for the complete alias-to-ecosystem mapping (
 
 ## 3. Ecosystem Auto-Detection
 
-If scanning all ecosystems, detect which are present using file existence checks.
+If scanning all ecosystems, detect which are present using file existence checks. When ecosystems share a manifest (`package.json`, `pyproject.toml`, `*.tf`), follow the "Shared Manifests" rules in `references/ecosystems.md`.
 
 Report detected ecosystems to the user before proceeding:
 > "Detected ecosystems: npm_and_yarn, github_actions, terraform"
@@ -59,22 +59,28 @@ If a specific ecosystem was requested but not detected:
 
 ## 4. Run Dependabot Updates
 
-For each ecosystem to scan, run the Dependabot CLI:
+Do not pass `--local .`: the CLI copies that directory's `.git` into the updater container and commits there, so installed git hooks (pre-commit, prek, husky) run inside the container and the update fails with `failed to initialize clone dir`. Scan a copy of the working tree without `.git` instead. It keeps uncommitted changes and leaves out ignored files such as `node_modules/`:
+
+```bash
+SCAN_DIR=$(mktemp -d) && git ls-files -co --exclude-standard -z | tar --null -cf - -T - | tar -xf - -C "$SCAN_DIR" && echo "$SCAN_DIR"
+```
+
+Shell variables do not carry over between commands, so pass the printed path literally as `<scan-dir>`. For each ecosystem to scan, run the Dependabot CLI:
 
 ```bash
 # Get the repository name dynamically
 REPO=$(gh repo view --json owner,name --jq '.owner.login + "/" + .name')
-LOCAL_GITHUB_ACCESS_TOKEN=$(gh auth token) dependabot update <ecosystem> "$REPO" --local . 2>&1
+LOCAL_GITHUB_ACCESS_TOKEN=$(gh auth token) dependabot update <ecosystem> "$REPO" --local <scan-dir> 2>&1
 ```
 
 Where `<ecosystem>` is the CLI ecosystem value (e.g., `npm_and_yarn`, `terraform`, `github_actions`).
 
-**Run ecosystems serially** (one at a time) to avoid output confusion.
+**Run ecosystems serially** (one at a time) to avoid output confusion. When all are done, remove the copy with `rm -rf <scan-dir>`.
 
 **Understanding the output:**
 - The CLI outputs **JSON lines** (one JSON object per line), NOT human-readable tables
 - The CLI **never modifies files directly** - it only outputs data describing what would change
-- The `--local .` flag uses your working directory instead of cloning from GitHub (NOT a "dry-run" flag)
+- The `--local <scan-dir>` flag scans that directory instead of cloning from GitHub (NOT a "dry-run" flag)
 - Output can be very large (40KB+) - it may be truncated
 - **Important:** Use `2>&1` to capture both stdout and stderr, as the CLI mixes log messages (stderr) with JSON output (stdout)
 
